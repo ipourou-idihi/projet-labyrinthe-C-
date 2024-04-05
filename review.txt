@@ -1,0 +1,29 @@
+Essayez de faire fonctionner le compilateur sans surcouche d'abstraction (CMake ou Makefile).
+Ici 5 fichiers suffisent pour une architecture claire:
+joueur.hpp, joueur.cpp
+labyrinthe.hpp, labyrinthe.cpp
+main.cpp
+La commande gpp joueur.cpp labyrinthe.cpp main.cpp suffit à vous produire un fichier executable.
+En faire plus devient assez vite de l'overkill difficilement justifiable (d'ailleurs je ne suis pas sur de la façon dont les dossiers sont gérés, on se retrouve avec ProjetLabyrinthe dans ProjetLabyrinthe, des dossiers -p,  bin ou encore pkgRedirects ? A quoi sert le fichier CMakeConfigureLog.yaml ?).
+
+Le code est bien structuré, les fonctionnalités sont clairement définies.
+A part la position du joueur (X, Y), les variables sont explicites (n'hésitez pas à mettre longitude et latitude par exemple)
+
+Pour aller plus loin dans la conception, on peut se questionner sur le fait que le labyrinthe soit responsable des déplacements.
+On peut imaginer une fonction Joueur::deplacer(Direction direction)
+qui appellerait bool Labyrinthe::estCaseCibleValide(int newX, int newY)
+(D'ailleurs on préfère souvent préfixer les fonctions et variables booléennes par is/are/have/has)
+Le labyrinthe aurait ainsi la responsabilité de dire si la case est valide mais pas de déplacer le joueur.
+
+On peut aussi utiliser une classe DeplacerJoueur à part pour représenter cette fonctionnalité (cela ouvre des portes ensuite pour avoir une classe générique via un template Deplacer qui pourrait déplacer les joueurs comme les adversaires par exemple.)
+
+Préférez utiliser les méthodes qui viennent avec les objets (carteAvecJoueur.get(joueur.y) au lieu de carteAvecJoueur[joueur.y] par exemple)
+Cela permet de s'assurer que l'objet est "sensé" faire ce que vous demandez, sans passer par une logique plus bas niveau plus permissive.
+
+D'une manière générale, évitez les commentaires qui décrivent ce que le code fait. Ils sont pénibles à maintenir et n'apportent pas grand chose au lecteur.
+Préférez documenter comment utiliser le code et surtout pourquoi vous avez choisit cette manière de faire.
+Ici vos commentaires sont en fait souvent des noms de fonctions, par exemple le bout de code sous "Vérifier si le déplacement est valide".
+Vous avez fait le plus dur en séparant les fonctionnalités, allez jusqu'au bout en les attribuant aux classes appropriées.
+Certains commentaires, à la marge, sont à la limite du polluant comme par exemple y++; // Incrémenter le compteur de ligne après chaque ligne lue ou encore "(ce code est simplifié pour l'exemple)"
+
+15/20
